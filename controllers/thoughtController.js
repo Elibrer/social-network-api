@@ -28,7 +28,23 @@ module.exports = {
   // Create a thought
   async createThought(req, res) {
     try {
+      const { username } = req.body;
+
+      const user = await User.findOne({ username });
+
+      if (!user) {
+        return res.status(404).json({ message: 'No user with that username!' });
+      }
+
       const thought = await Thought.create(req.body);
+
+
+      await User.findOneAndUpdate(
+        { username },
+        { $push: { thoughts: thought._id } },
+        { new: true }
+      );
+
       res.json(thought);
     } catch (err) {
       console.log(err);
@@ -72,6 +88,7 @@ module.exports = {
   //Add a reaction
   async addReaction(req, res) {
     console.log('You are adding a reaction');
+
     console.log(req.body);
 
     try {

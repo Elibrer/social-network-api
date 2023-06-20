@@ -1,3 +1,4 @@
+const { ObjectId } = require("bson");
 const { User, Thought } = require("../models");
 
 const userCount = async () => {
@@ -42,7 +43,8 @@ module.exports = {
   // Create a new user
   async createUser(req, res) {
     try {
-      const user = await User.create(req.body);
+      const user = await User.create(req.body)
+
       res.json(user);
     } catch(err) {
       res.status(500).json(err)
@@ -69,15 +71,52 @@ module.exports = {
   // Delete a user and remove associated thoughts
   async deleteUser(req, res) {
     try {
+
+      const userData = await User.findOne({ _id: req.params.userId });
+      console.log(userData.thoughts)
+
+
       const user = await User.findOneAndRemove({ _id: req.params.userId });
 
       if (!user) {
         res.status(404).json({ message: 'No such user exists' });
       }
 
-      await Thought.deleteMany({ users: req.params.userId });
+      await Thought.deleteMany({ _id: { $in: userData.thoughts } });
 
       res.json({ message: 'User and associated thoughts successfully deleted'})
+    } catch (err) {
+      console.log(err);
+      res.status(500).json(err);
+    }
+  },
+
+  // Add a friend
+  async addFriend(req, res) {
+    try {
+      const user = await User.findOneAndUpdate(
+        { _id: req.params.userId },
+        { $push: { friends: req.body } },
+        { runValidators: true, new: true }
+      );
+      if (!user) {
+        res.status(404).json({ message: 'No user with that ID' });
+      }
+      res.json(user);
+    } catch (err) {
+      res.status(500).json(err)
+    }
+  },
+
+  // Remove a friend
+  async removeFriend(req, res) {
+    try {
+      const user = await User.findOneAndUpdate(
+        { _id: req.params.userId },
+        { $pull: { friends: req.params.friendId } },
+        { runValidators: true, new: true }
+      );
+      res.json({ message: 'Friend successfully removed' });
     } catch (err) {
       console.log(err);
       res.status(500).json(err);

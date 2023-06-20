@@ -7,10 +7,10 @@
   "scripts": {
     "start": "node server",
     "dev": "nodemon server",
-    "seed": "node utils/seed",
-    "heroku-postbuild": "node utils/seed.js"
+    "seed": "node utils/seed"
   },
   "dependencies": {
+    "dayjs": "^1.11.8",
     "express": "^4.17.1",
     "mongoose": "^6.0.13"
   },
