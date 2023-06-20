@@ -28,6 +28,7 @@ module.exports = {
     try {
       const user = await User.findOne({ _id: req.params.userId })
       .select("-__v")
+      .populate("friends thoughts")
       if (!user) {
         res.status(404).json({ message: 'No user with that ID' })
       }
@@ -68,13 +69,13 @@ module.exports = {
     }
   },
 
+
   // Delete a user and remove associated thoughts
   async deleteUser(req, res) {
     try {
 
       const userData = await User.findOne({ _id: req.params.userId });
       console.log(userData.thoughts)
-
 
       const user = await User.findOneAndRemove({ _id: req.params.userId });
 

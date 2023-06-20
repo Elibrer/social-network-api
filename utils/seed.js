@@ -30,18 +30,31 @@ connection.once('open', async () => {
     });
   }
 
-  const friendArr = [];
+  let allUsers = await User.find({})
+  allUsers = allUsers.map(user => user._doc);
 
   for (let i = 0; i < usersData.length; i++) {
     const friendArr = [];
-
-
     
+    const randomNumOfFriends = Math.floor(Math.random() * 6);
 
-  const allUsers = await User.find({})
-  const userDocs = allUsers.map(user => user._doc);
-  console.table(userDocs);
+    for (let j = 0; j < randomNumOfFriends; j++) {
+      const randomFriendIndex = Math.floor(Math.random() * 19);
+      if (usersData[i].username !== allUsers[randomFriendIndex].username) {
+        friendArr.push(allUsers[randomFriendIndex]._id.toString());
+        // push  allUsers[i]._id to allUsers[randomFriendIndex] friend array
+      }
+    }
+    const userId = allUsers[i]._id.toString();
+    console.log(friendArr)
+    await User.findOneAndUpdate(
+      { _id: userId },
+      { $push: { friends: friendArr } },
+      { new: true }
+    );
+  }
 
+  console.table(allUsers);
   console.table(thoughts)
   console.info('Seeding complete! 🌱');
   process.exit(0);
