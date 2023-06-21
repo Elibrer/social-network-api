@@ -23,7 +23,7 @@ const usersData = [
   { username: 'henry40' }
 ];
 
-const thoughts = [
+const thoughtsData = [
   {
     username: 'brandon_23',
     thoughtText: `Just finished reading a great book. Highly recommend it!`,
@@ -155,4 +155,4 @@ const getRandomArrItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 
 // Export the functions for use in seed.js
-module.exports = { usersData, thoughts };
+module.exports = { usersData, thoughtsData };
