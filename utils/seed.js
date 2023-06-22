@@ -37,9 +37,9 @@ connection.once("open", async () => {
     });
   }
 
-  /* Create random number of friends for each user between 0-7.
-  Ensure duplicate friends aren't created, can't add yourself as a friend,
-  and when a friend is added it also adds the user as a friend in the friends friend list. */
+  // /* Create random number of friends for each user between 0-7.
+  // Ensure duplicate friends aren't created, can't add yourself as a friend,
+  // and when a friend is added it also adds the user as a friend in the friends friend list. */
 
   let allUsers = await User.find({});
   allUsers = allUsers.map((user) => user._doc);
@@ -53,20 +53,22 @@ connection.once("open", async () => {
     for (let j = 0; j < randomNumOfFriends; j++) {
       const randomFriendIndex = Math.floor(Math.random() * 19);
       const userCheck = await User.findOne({ _id: userId });
+    
+      const randomFriendId = allUsers[randomFriendIndex]._id.toString();
+      const isFriendAlreadyAdded = friendArr.includes(randomFriendId);
+    
       if (
-        !userCheck.friends.includes(
-          allUsers[randomFriendIndex]._id.toString()
-        ) ||
-        !allUsers[randomFriendIndex].friends.includes(userId)
+        (!userCheck.friends.includes(randomFriendId) ||
+          !allUsers[randomFriendIndex].friends.includes(userId)) &&
+        !isFriendAlreadyAdded &&
+        usersData[i].username !== allUsers[randomFriendIndex].username
       ) {
-        if (usersData[i].username !== allUsers[randomFriendIndex].username) {
-          friendArr.push(allUsers[randomFriendIndex]._id.toString());
-          await User.findOneAndUpdate(
-            { _id: allUsers[randomFriendIndex]._id.toString() },
-            { $push: { friends: userId } },
-            { new: true }
-          );
-        }
+        friendArr.push(randomFriendId);
+        await User.findOneAndUpdate(
+          { _id: randomFriendId },
+          { $push: { friends: userId } },
+          { new: true }
+        );
       }
     }
 
@@ -77,7 +79,7 @@ connection.once("open", async () => {
     );
   }
 
-  /* Console table readable data */
+  // /* Console table readable data */
 
   let userTable = await User.find({});
   userTable = userTable.map((user) => {

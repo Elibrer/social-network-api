@@ -1,7 +1,6 @@
-const { Schema, model } = require('mongoose');
-const { reactionSchema } = require('./Reaction')
-const dayjs = require('dayjs');
-
+const { Schema, model } = require("mongoose");
+const { reactionSchema } = require("./Reaction");
+const dayjs = require("dayjs");
 
 const thoughtSchema = new Schema(
   {
@@ -13,13 +12,13 @@ const thoughtSchema = new Schema(
     },
     createdAt: {
       type: Date,
-      default: () => dayjs().format('YYYY-MM-DDTHH:mm:ss.sssZ'),
+      default: () => dayjs().format("YYYY-MM-DDTHH:mm:ss.sssZ"),
     },
     username: {
       type: String,
       required: true,
     },
-    reactions: [reactionSchema],  
+    reactions: [reactionSchema],
   },
   {
     toJSON: {
@@ -29,11 +28,10 @@ const thoughtSchema = new Schema(
   }
 );
 
-thoughtSchema.virtual('reactionCount').get(function () {
+thoughtSchema.virtual("reactionCount").get(function () {
   return this.reactions.length;
-})
+});
 
-const Thought = model('thought', thoughtSchema);
-
+const Thought = model("thought", thoughtSchema);
 
 module.exports = Thought;

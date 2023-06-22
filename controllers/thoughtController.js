@@ -124,8 +124,6 @@ module.exports = {
           .status(404)
           .json({ message: "No thought found with that ID" });
       }
-      // white background red text in console using ANSI escape codes
-      // const ansiCode = '\x1b[41m%s\x1b[0m';
       console.log("\x1b[41mYou added a reaction\x1b[0m", updatedFields);
       res.json(thought);
     } catch (err) {
@@ -146,6 +144,9 @@ module.exports = {
           .status(404)
           .json({ message: "No reaction found with that ID" });
       }
+      console.log(
+        `\x1b[41mYou removed a reaction with id ${req.params.reactionId}\x1b[0m`
+      );
       res.json(thought);
     } catch (err) {
       res.status(500).json(err);
