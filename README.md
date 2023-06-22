@@ -14,7 +14,7 @@
 ## Links
 > - [GitHub Repository](https://github.com/elibrer/social-network-api)
 > 
-> - [Link to video walkthrough]()
+> - [Link to video walkthrough](https://drive.google.com/file/d/1lMydzievzTMdSHwVcOjAJAlhVa6ZrMXr/view?usp=sharing)
 
 ---
 
